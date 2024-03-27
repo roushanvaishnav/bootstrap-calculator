@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap Calculator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .calculator {
+            width: 300px;
+            margin: 50px auto;
+            background-color: #f2f2f2;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .btn {
+            width: 70px;
+            height: 70px;
+            font-size: 24px;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        #display {
+            height: 70px;
+            font-size: 28px;
+            text-align: right;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+        .btn-zero {
+            width: 140px;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" class="form-control mb-2" id="display" readonly>
+        <div class="btn-group btn-group-lg" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-primary" data-operation="C">C</button>
+            <button type="button" class="btn btn-primary" data-operation="CE">CE</button>
+            <button type="button" class="btn btn-primary" data-operation="%">%</button>
+            <button type="button" class="btn btn-danger" data-operation="/">/</button>
+        </div>
+        <div class="btn-group btn-group-lg" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-secondary" data-number="7">7</button>
+            <button type="button" class="btn btn-secondary" data-number="8">8</button>
+            <button type="button" class="btn btn-secondary" data-number="9">9</button>
+            <button type="button" class="btn btn-danger" data-operation="*">*</button>
+        </div>
+        <div class="btn-group btn-group-lg" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-secondary" data-number="4">4</button>
+            <button type="button" class="btn btn-secondary" data-number="5">5</button>
+            <button type="button" class="btn btn-secondary" data-number="6">6</button>
+            <button type="button" class="btn btn-danger" data-operation="-">-</button>
+        </div>
+        <div class="btn-group btn-group-lg" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-secondary" data-number="1">1</button>
+            <button type="button" class="btn btn-secondary" data-number="2">2</button>
+            <button type="button" class="btn btn-secondary" data-number="3">3</button>
+            <button type="button" class="btn btn-danger" data-operation="+">+</button>
+        </div>
+        <div class="btn-group btn-group-lg" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-secondary btn-zero" data-number="0">0</button>
+            <button type="button" class="btn btn-secondary" data-number=".">.</button>
+            <button type="button" class="btn btn-success" data-operation="=">=</button>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var currentVal = '';
+            var equation = '';
+            var resultDisplayed = false;
+
+            $('button').click(function() {
+                var buttonValue = $(this).attr('data-number') || $(this).attr('data-operation');
+                updateDisplay(buttonValue);
+            });
+
+            $(document).keypress(function(event) {
+                var keyPressed = String.fromCharCode(event.which);
+                if (/[0-9\.+\-*/%]/.test(keyPressed)) {
+                    updateDisplay(keyPressed);
+                } else if (event.which === 13) { // Enter key
+                    updateDisplay('=');
+                } else if (event.which === 8) { // Backspace key
+                    updateDisplay('CE');
+                }
+            });
+
+            function updateDisplay(value) {
+                if (value === 'C') {
+                    currentVal = '';
+                    equation = '';
+                    $('#display').val('');
+                } else if (value === 'CE') {
+                    currentVal = currentVal.slice(0, -1);
+                    equation = equation.slice(0, -1);
+                    $('#display').val(currentVal);
+                } else if (value === '=') {
+                    currentVal = eval(currentVal);
+                    equation += '=' + currentVal;
+                    $('#display').val(equation);
+                    resultDisplayed = true;
+                } else if (resultDisplayed && /[0-9]/.test(value)) {
+                    currentVal = value;
+                    equation = currentVal;
+                    $('#display').val(equation);
+                    resultDisplayed = false;
+                } else {
+                    currentVal += value;
+                    equation += value;
+                    $('#display').val(equation);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
